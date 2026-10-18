@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0e1c">
+<title>RenzSolid</title>
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0e1c;--s1:#141935;--s2:#1c2245;--line:#272e5c;--tx:#eef0ff;--mut:#8f96c2;--gold:#ffc83a;--vio:#7c5cff;--blu:#3d8bff;--red:#ff5d73;--grn:#25d366}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
+body{margin:0;padding-bottom:110px;font:400 15px/1.5 'Plus Jakarta Sans',system-ui,sans-serif;color:var(--tx);background:radial-gradient(700px 380px at 90% -80px,#3a2fa8 0,transparent 70%),radial-gradient(500px 300px at -10% 160px,#12407d 0,transparent 70%),var(--bg)}
+button,input,textarea{font:inherit;color:inherit}a{color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+svg{display:block}
+/* tombol */
+.btn{min-height:46px;border:0;border-radius:14px;padding:0 20px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;color:#fff;background:linear-gradient(135deg,var(--vio),var(--blu));box-shadow:0 8px 20px #5a5cff40;transition:transform .12s,filter .12s}
+.btn:active{transform:scale(.97)}.btn:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
+.btn.gold{background:var(--gold);color:#241a00;box-shadow:0 8px 20px #ffc83a40}.btn.glass{background:#ffffff26;box-shadow:none;backdrop-filter:blur(6px)}
+.btn.line{background:transparent;border:1.5px solid var(--line);box-shadow:none}.btn.wa{background:var(--grn);box-shadow:0 8px 20px #25d36640}
+.btn.s{min-height:36px;padding:0 14px;font-size:13px;border-radius:11px}.btn.full{display:flex;width:100%;margin:12px 0}
+/* header */
+.bar{display:flex;justify-content:space-between;align-items:center;padding:16px 0 12px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:21px;letter-spacing:-.4px}
+.logo i{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-style:normal;background:linear-gradient(135deg,var(--gold),#ff9a3a);color:#241a00;font-size:19px}
+.me{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);background:var(--s1);font-weight:800;font-size:16px;cursor:pointer;color:var(--gold)}
+.wallet{position:relative;overflow:hidden;border-radius:28px;padding:20px;background:linear-gradient(135deg,#7c5cff,#3d8bff);box-shadow:0 22px 50px #3d5bff4d}
+.wallet:before{content:"";position:absolute;right:-50px;top:-70px;width:200px;height:200px;border-radius:50%;background:#ffffff1f}
+.wallet:after{content:"";position:absolute;left:-30px;bottom:-80px;width:150px;height:150px;border-radius:50%;background:#ffffff14}
+.wallet>*{position:relative;z-index:1}.wallet small{opacity:.85;font-size:13px;font-weight:600}
+.amt{display:flex;align-items:center;gap:10px;font-size:42px;font-weight:800;letter-spacing:-1.5px;line-height:1.15;margin:2px 0 14px}
+.coin{width:34px;height:34px;border-radius:50%;background:var(--gold);color:#241a00;display:grid;place-items:center;font-size:17px;letter-spacing:0;box-shadow:inset 0 -3px 0 #0002}
+.wb{display:flex;gap:10px}.wb .btn{flex:1}
+/* cari */
+.srch{margin:18px 0 0}
+.srch input{width:100%;height:50px;border-radius:16px;border:1.5px solid var(--line);padding:0 16px 0 46px;background:var(--s1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%238f96c2' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='9' cy='9' r='6.5'/%3E%3Cpath d='m14 14 4.5 4.5'/%3E%3C/svg%3E") 15px center no-repeat}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:14px 0 16px;padding-bottom:2px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 17px;border-radius:99px;background:var(--s1);border:1.5px solid var(--line);font-weight:600;cursor:pointer;color:var(--mut)}
+.chip.on{background:var(--tx);color:#14183a;border-color:var(--tx)}
+/* kartu produk */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(min-width:620px){.grid{grid-template-columns:repeat(3,1fr);gap:16px}}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:22px;overflow:hidden;cursor:pointer;transition:transform .15s,border-color .15s}
+.card:active{transform:scale(.98)}@media(hover:hover){.card:hover{border-color:var(--vio)}}
+.card.wide{grid-column:1/-1;cursor:default;padding:12px}
+.cov{position:relative;aspect-ratio:1}.ico{width:100%;height:100%;object-fit:cover;display:grid;place-items:center;font-weight:800;font-size:46px;color:#fff}
+.ico.sm{width:60px;height:60px;border-radius:16px;font-size:26px;flex:none}.ico.lg{width:84px;height:84px;border-radius:22px;font-size:36px;flex:none}
+.bd{padding:11px 12px 13px;display:flex;flex-direction:column;gap:7px}
+.ttl{font-weight:700;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+.ft{display:flex;justify-content:space-between;align-items:center}.pr{font-weight:800;font-size:19px;color:var(--gold)}
+.mut{color:var(--mut);font-size:13px}.st{color:var(--gold)}
+.tag{background:#7c5cff2e;color:#b9aaff;border-radius:8px;padding:2px 9px;font-size:12px;font-weight:700}.tag.t{background:#ffc83a26;color:var(--gold)}
+.off{position:absolute;left:8px;top:8px;background:var(--red);color:#fff;font-weight:800;font-size:12px;padding:3px 10px;border-radius:99px}.old{color:var(--mut);font-size:13px;font-weight:600}
+.lk{position:absolute;right:8px;bottom:8px;display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:99px;border:0;background:#0b0e1cb8;backdrop-filter:blur(6px);color:#fff;font-weight:700;font-size:13px;cursor:pointer}
+.lk svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2.2}.lk.on svg{fill:var(--red);stroke:var(--red)}
+.lk.big{position:static;background:var(--s2);padding:10px 14px;font-size:15px}
+.empty{text-align:center;color:var(--mut);padding:60px 0;grid-column:1/-1}
+/* navigasi bawah */
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:min(92%,420px);background:#141935ee;backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:24px;display:flex;padding:6px;z-index:6;box-shadow:0 14px 34px #0008}
+.nav button{flex:1;border:0;background:none;padding:8px 4px;border-radius:18px;font-weight:700;font-size:12px;color:var(--mut);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav button.on{background:linear-gradient(135deg,var(--vio),var(--blu));color:#fff}
+/* modal */
+#m{position:fixed;inset:0;background:#05071299;backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.sheet{background:var(--s1);border:1px solid var(--line);border-bottom:0;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:30px 30px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom))}
+.grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 12px}
+.x{float:right;width:36px;height:36px;border-radius:50%;border:0;background:var(--s2);font-size:20px;cursor:pointer;margin-left:8px}
+.shots{display:flex;gap:10px;overflow-x:auto;margin:14px 0}.shots img{height:200px;border-radius:16px;border:1px solid var(--line)}
+.desc{white-space:pre-wrap;color:#cfd3f5}.box{background:var(--s2);border-radius:16px;padding:13px;margin:12px 0}
+.stars .s{font-size:34px;color:#3a4275;cursor:pointer}.stars .s.on{color:var(--gold)}
+input,textarea{width:100%;padding:13px;border:1.5px solid var(--line);border-radius:14px;margin:6px 0;background:var(--s2)}
+input::placeholder,textarea::placeholder{color:#6d749f}input:focus,textarea:focus{outline:2px solid var(--vio);border-color:transparent}
+.pre{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.pre .chip{text-align:center;padding:13px 0;font-size:17px}
+.rv{border-top:1px solid var(--line);padding:10px 0}
+.hd{display:flex;align-items:center;gap:14px;margin:6px 0}.hd h2{margin:0 0 4px;line-height:1.2}
+.toast{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);background:#fff;color:#14183a;padding:11px 20px;border-radius:99px;font-weight:700;z-index:30;box-shadow:0 10px 30px #0006;max-width:90%;text-align:center}.toast.bad{background:var(--red);color:#fff}
+/* masuk */
+#auth{max-width:400px;margin:8vh auto 0;padding:0 16px}
+#auth .card0{background:var(--s1);border:1px solid var(--line);border-radius:28px;padding:24px;box-shadow:0 24px 60px #0007}
+#auth h1{margin:14px 0 2px;font-size:30px;letter-spacing:-.6px}.err{color:#ff8a9a;min-height:20px;font-size:13px}
+.seg{display:flex;gap:8px;margin:16px 0 8px}.seg .chip{flex:1;text-align:center}
+footer{text-align:center;padding:22px 0;color:var(--mut)}footer a{color:#b9aaff;font-weight:700;margin:0 8px;text-decoration:none}
+</style></head><body>
+
+<div id="auth"><div class="card0">
+  <div class="logo"><i>R</i></div><h1>RenzSolid</h1><p class="mut" style="margin:0">Daftar atau masuk untuk belanja pakai saldo.</p>
+  <div class="seg"><button class="chip on" id="t1" onclick="mode('masuk')">Masuk</button><button class="chip" id="t2" onclick="mode('daftar')">Daftar</button></div>
+  <input id="em" placeholder="Username (huruf kecil, angka, _)" autocapitalize="none" autocomplete="username"><input id="pw" type="password" placeholder="Password (min. 6 karakter)">
+  <div class="err" id="err"></div><button class="btn full" id="go" onclick="go()">Masuk</button>
+</div></div>
+
+<div id="app" hidden><div class="wrap">
+  <div class="bar"><div class="logo"><i>R</i>RenzSolid</div><button class="me" id="av" onclick="openM('u','')">R</button></div>
+  <section class="wallet">
+    <small id="hi">Saldo kamu</small>
+    <div class="amt"><span class="coin">S</span><span id="bal">0</span></div>
+    <div class="wb"><button class="btn gold" onclick="openM('t','')">+ Top up saldo</button><button class="btn glass" onclick="openM('k','')">Tukar kode</button></div>
+  </section>
+  <div id="bar"><div class="srch"><input id="q" type="search" placeholder="Cari APK, file, atau link" oninput="setQ(this.value)"></div>
+  <div class="chips"><button class="chip on" data-k="all" onclick="setKind('all')">Semua</button><button class="chip" data-k="apk" onclick="setKind('apk')">APK</button><button class="chip" data-k="file" onclick="setKind('file')">File</button><button class="chip" data-k="link" onclick="setKind('link')">Link</button><button class="chip" data-k="liked" onclick="setKind('liked')">Disukai</button></div></div>
+  <div class="grid" id="list"><p class="empty">Memuat...</p></div>
+  <footer><a href="https://whatsapp.com/channel/0029Vb8u5dB6BIEc9EUeIm1A" target="_blank" rel="noopener">Saluran WhatsApp</a><a href="https://www.tiktok.com/@Renzsolid3" target="_blank" rel="noopener">TikTok Renzsolid3</a></footer>
+</div>
+<nav class="nav">
+  <button data-t="toko" onclick="setTab('toko')"><svg viewBox="0 0 24 24"><path d="M4 7h16l-1.5 12.5a1 1 0 0 1-1 .9h-11a1 1 0 0 1-1-.9L4 7zM8 7V5a4 4 0 0 1 8 0v2"/></svg>Toko</button>
+  <button data-t="lelang" onclick="setTab('lelang')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Lelang</button>
+  <button data-t="saya" onclick="setTab('saya')"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>Milik saya</button>
+</nav></div>
+<div id="m" hidden onclick="if(event.target==this)closeM()"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{initializeAuth,browserLocalPersistence,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{initializeFirestore,collection,doc,setDoc,getDoc,onSnapshot,query,where,orderBy,runTransaction}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app=initializeApp({apiKey:"AIzaSyDvdO7-YcCM1exGTSZk_fAfuyWL34TEJaw",authDomain:"renzcline.firebaseapp.com",projectId:"renzcline",storageBucket:"renzcline.firebasestorage.app",messagingSenderId:"921126801335",appId:"1:921126801335:web:4efdcecfd3132733ebe232"});
+const auth=initializeAuth(app,{persistence:browserLocalPersistence}),db=initializeFirestore(app,{experimentalAutoDetectLongPolling:true});
+const $=s=>document.querySelector(s);
+const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const K=n=>{n=+n||0;return n>=1000?(n/1000).toString().replace('.',',')+'K':String(n)}; // 1000 saldo = 1K
+const KIND={apk:'APK',file:'File',link:'Link'};
+const GET={apk:'Download APK',file:'Download file (buka pakai ZArchiver)',link:'Buka link'};
+const stars=n=>'★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(n));
+const hue=s=>Math.abs([...String(s)].reduce((a,c)=>a*31+c.charCodeAt(0)|0,7))%360;
+const ico=(x,c='ico')=>x.logo?`<img class="${c}" src="${x.logo}" alt="">`:`<div class="${c}" style="background:linear-gradient(135deg,hsl(${hue(x.title)} 70% 52%),hsl(${(hue(x.title)+50)%360} 70% 38%))">${e((x.title||'?')[0].toUpperCase())}</div>`;
+const HEART='<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+const PRESET=[1000,5000,10000,20000,50000,100000];
+let reg=false,uid,me,P=[],A=[],B={},L={},RV=[],tab='toko',cur=null,unsubs=[],stopRV=null,pick=5,am='masuk',q='',kf='all',topAmt=0,tt;
+
+const toast=(m,bad)=>{const t=$('#toast');t.textContent=m;t.className='toast'+(bad?' bad':'');t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,3200)};
+
+/* ---------- Login / daftar ---------- */
+const wait=(p,ms=12000)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r({message:'Koneksi lambat, coba lagi.'}),ms))]);
+const ERR={
+  'auth/operation-not-allowed':'Login Email/Password belum diaktifkan: Firebase Console, Authentication, Sign-in method.',
+  'auth/invalid-credential':'Username atau password salah. Kalau belum punya akun, pilih Daftar.',
+  'auth/invalid-login-credentials':'Username atau password salah. Kalau belum punya akun, pilih Daftar.',
+  'auth/user-not-found':'Akun belum terdaftar, pilih Daftar.','auth/wrong-password':'Password salah.',
+  'auth/invalid-email':'Username tidak valid.','auth/missing-password':'Isi password dulu.',
+  'auth/email-already-in-use':'Username sudah dipakai, pilih yang lain atau Masuk.',
+  'auth/weak-password':'Password minimal 6 karakter.','auth/too-many-requests':'Terlalu banyak percobaan, tunggu sebentar.',
+  'auth/network-request-failed':'Koneksi gagal, cek internet.',
+  'auth/operation-not-supported-in-this-environment':'Buka lewat alamat web (hosting), bukan langsung dari file di HP.',
+  'auth/unauthorized-domain':'Domain belum diizinkan: Firebase Console, Authentication, Settings, Authorized domains.'
+};
+if(location.protocol=='file:')$('#err').textContent='Halaman ini harus dibuka lewat alamat web (hosting), bukan langsung dari file.';
+window.mode=m=>{am=m;$('#go').textContent=m=='daftar'?'Daftar':'Masuk';$('#t1').classList.toggle('on',m=='masuk');$('#t2').classList.toggle('on',m=='daftar')};
+window.go=async()=>{
+  const un=$('#em').value.trim().toLowerCase(),pw=$('#pw').value,btn=$('#go'),txt=btn.textContent;
+  $('#err').textContent='';btn.disabled=true;btn.textContent='Memproses...';
+  try{
+    if(!un||!pw)throw{message:'Isi username dan password dulu.'};
+    const em=un.includes('@')?un:un+'@renzsolid.app';
+    if(am=='daftar'){
+      if(!/^[a-z0-9_]{3,20}$/.test(un))throw{message:'Username 3 sampai 20 karakter: huruf kecil, angka, atau _ saja.'};
+      reg=true;
+      const c=await wait(createUserWithEmailAndPassword(auth,em,pw));
+      setDoc(doc(db,'users',c.user.uid),{nama:un,username:un,email:em,saldo:0,created:Date.now()}).catch(x=>toast('Akun dibuat, tapi data akun gagal disimpan. Cek Rules Firestore.',1));
+    }else await wait(signInWithEmailAndPassword(auth,em,pw));
+  }catch(x){$('#err').textContent=ERR[x.code]||x.message||'Terjadi kesalahan.';console.error(x)}
+  reg=false;btn.disabled=false;btn.textContent=txt;
+};
+window.out=()=>{closeM();signOut(auth)};
+
+onAuthStateChanged(auth,u=>{
+  unsubs.forEach(f=>f());unsubs=[];
+  if(!u){uid=null;$('#app').hidden=true;$('#auth').hidden=false;return}
+  uid=u.uid;$('#auth').hidden=true;$('#app').hidden=false;
+  if(!reg)getDoc(doc(db,'users',uid)).then(s=>{if(!s.exists()){const n=(u.email||'pembeli').split('@')[0];return setDoc(doc(db,'users',uid),{nama:n,username:n,email:u.email||'',saldo:0,created:Date.now()})}}).catch(x=>console.error(x));
+  const list=(qy,fn)=>onSnapshot(qy,s=>{fn(s.docs.map(d=>({id:d.id,...d.data()})));render()},x=>console.error(x));
+  unsubs=[
+    onSnapshot(doc(db,'users',uid),s=>{me=s.data();render()}),
+    list(query(collection(db,'products'),orderBy('created','desc')),r=>P=r),
+    list(query(collection(db,'auctions'),orderBy('created','desc')),r=>A=r),
+    list(query(collection(db,'purchases'),where('uid','==',uid)),r=>{B={};r.forEach(b=>B[b.pid]=b)}),
+    list(query(collection(db,'likes'),where('uid','==',uid)),r=>{L={};r.forEach(b=>L[b.pid]=1)})
+  ];
+});
+
+/* ---------- Tampilan ---------- */
+const left=ms=>{if(ms<=0)return'Selesai';const s=ms/1000|0;return`${s/3600|0}j ${s%3600/60|0}m ${s%60}d`};
+const tick=()=>document.querySelectorAll('.cd').forEach(x=>x.textContent=left(x.dataset.e-Date.now()));
+setInterval(tick,1000);
+setInterval(()=>{if(uid)render()},30000);
+
+const act=p=>p.promoPrice!=null&&p.promoPrice<p.price&&(!p.promoUntil||Date.now()<p.promoUntil);
+const eff=p=>act(p)?p.promoPrice:p.price;
+const pct=p=>Math.round((1-p.promoPrice/p.price)*100);
+const priceH=(p,fs)=>{const st=fs?` style="font-size:${fs}px"`:'';return act(p)?`<span><span class="pr"${st}>${K(p.promoPrice)}</span> <s class="old">${K(p.price)}</s></span>`:`<span class="pr"${st}>${K(p.price)}</span>`};
+const badge=p=>act(p)?`<span class="off">-${pct(p)}%</span>`:'';
+const likeBtn=(p,c='')=>`<button class="lk ${c} ${L[p.id]?'on':''}" onclick="event.stopPropagation();like('${p.id}')" aria-label="Suka">${HEART}<span>${p.likeCount||0}</span></button>`;
+const pCard=p=>{const r=p.ratingCount?p.ratingSum/p.ratingCount:0;
+  return`<div class="card" onclick="openM('p','${p.id}')"><div class="cov">${ico(p)}${badge(p)}${likeBtn(p)}</div><div class="bd"><div class="ttl">${e(p.title)}</div><div class="meta"><span class="tag">${KIND[p.kind]}</span>${r?`<span><span class="st">★</span> ${r.toFixed(1)}</span>`:''}</div><div class="ft">${priceH(p)}<span class="mut">${p.stock>0?'Stok '+p.stock:'Habis'}</span></div></div></div>`};
+const aCard=a=>`<div class="card" onclick="openM('a','${a.id}')"><div class="cov">${ico(a)}</div><div class="bd"><div class="ttl">${e(a.title)}</div><div class="meta"><span class="tag">${KIND[a.kind]}</span><span class="tag t cd" data-e="${a.endsAt}"></span></div><div class="ft"><span class="pr">${a.topBid?K(a.topBid):K(a.startPrice)}</span><span class="mut">${a.topBid?'Tertinggi':'Harga awal'}</span></div></div></div>`;
+const mine=x=>`<div class="card wide"><div class="hd" style="margin:0">${ico(x,'ico sm')}<div style="flex:1;min-width:0"><div class="ttl">${e(x.title)}</div><span class="tag">${KIND[x.kind]}</span></div><a class="btn gold s" href="${e(x.url)}" target="_blank" rel="noopener">${x.kin
